@@ -4,19 +4,30 @@ const bodyParser = require('body-parser');
 const passport = require('passport');
 const app = express();
 
+// Mongoose connection string
 mongoose.connect('mongodb://127.0.0.1:27017/passport-jwt');
+// Mongoose error handler
 mongoose.connection.on('error', (error) => console.log(error));
+// Mongoose promise configeration
 mongoose.Promise = global.Promise;
 
+// Loading auth middleware
 require('./auth/auth');
 
+// Loading bodyparser middleware
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
+// Public unsecure routes
 const routes = require('./routes/routes');
+
+// Private secure user routes
 const secureRoute = require('./routes/secure-routes');
 
+// Public routes
 app.use('/', routes);
-//We plugin our jwt strategy as a middleware so only verified users can access this route
+
+//Privates routes with auth middleware
 app.use('/user', passport.authenticate('jwt', { session: false }), secureRoute);
 
 //Handle errors
@@ -28,3 +39,5 @@ app.use(function (err, req, res, next) {
 app.listen(3000, () => {
   console.log('Server started');
 });
+
+module.exports = app;
