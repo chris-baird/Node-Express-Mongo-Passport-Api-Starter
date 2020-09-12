@@ -4,6 +4,9 @@ const bodyParser = require("body-parser");
 const passport = require("passport");
 const app = express();
 
+// Loading dotenv file
+require("dotenv").config();
+
 // Mongoose connection string
 mongoose.connect("mongodb://127.0.0.1:27017/passport-jwt");
 // Mongoose error handler
